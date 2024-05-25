@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* CHROME */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* FIREFOX */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
