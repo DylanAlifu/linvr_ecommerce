@@ -75,6 +75,7 @@ const Slider = () => {
                 fill
                 sizes="100%"
                 className="object-cover"
+                style={{ objectPosition: "top" }}
               />
             </div>
           </div>

@@ -1,21 +1,31 @@
 "use client";
 
+import { useCartStore } from "@/hooks/useCartStore";
+import { useWixClient } from "@/hooks/useWixClient";
 import React, { useState } from "react";
 
-const Add = () => {
-  const [quantity, setQuantity] = useState(1);
+interface AddProps {
+  productId: string;
+  variantId: string;
+  stockNumber: number;
+}
 
-  // TEMPORARY
-  const stock = 4;
+const Add = ({ productId, variantId, stockNumber }: AddProps) => {
+  const [quantity, setQuantity] = useState(1);
 
   const handleQuantity = (type: "i" | "d") => {
     if (type === "d" && quantity > 1) {
       setQuantity((prev) => prev - 1);
     }
-    if (type === "i" && quantity < stock) {
+    if (type === "i" && quantity < stockNumber) {
       setQuantity((prev) => prev + 1);
     }
   };
+
+  const wixClient = useWixClient();
+
+  const { addItem, isLoading } = useCartStore();
+
   return (
     <div className="flex flex-col gap-4">
       <h4 className="font-medium">Choose a Quantity</h4>
@@ -36,13 +46,23 @@ const Add = () => {
               +
             </button>
           </div>
-          <div className=" text-xs">
-            Only <span className="text-orange-500">4 items</span> left! <br />
-            {"Don't"}
-            miss it
-          </div>
+
+          {stockNumber < 1 ? (
+            <div className=" text-xs">Product is Out of Stock!</div>
+          ) : (
+            <div className=" text-xs">
+              Only <span className="text-orange-500">{stockNumber} items</span>{" "}
+              left! <br />
+              {"Don't"}
+              miss it
+            </div>
+          )}
         </div>
-        <button className="w-36 text-sm rounded-3xl ring-1 ring-notification_red text-notification_red py-2 px-4 hover:bg-notification_red hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:text-white disabled:ring-none">
+        <button
+          className="w-36 text-sm rounded-3xl ring-1 ring-notification_red text-notification_red py-2 px-4 hover:bg-notification_red hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:text-white disabled:ring-none disabled:ring-0"
+          onClick={() => addItem(wixClient, productId, variantId, quantity)}
+          disabled={isLoading}
+        >
           Add to Cart
         </button>
       </div>
